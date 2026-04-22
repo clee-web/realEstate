@@ -115,26 +115,28 @@ export default function NewPropertyPage() {
     }
 
     try {
-      // Upload images to Supabase storage
+      // Upload images to Supabase storage (optional)
       const uploadedUrls: string[] = []
-      for (const image of images) {
-        const fileExt = image.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const filePath = `properties/${fileName}`
+      if (images.length > 0) {
+        for (const image of images) {
+          const fileExt = image.name.split('.').pop()
+          const fileName = `${Math.random()}.${fileExt}`
+          const filePath = `properties/${fileName}`
 
-        const { error: uploadError } = await supabase.storage
-          .from('property_images')
-          .upload(filePath, image)
+          const { error: uploadError } = await supabase.storage
+            .from('property_images')
+            .upload(filePath, image)
 
-        if (uploadError) {
-          throw uploadError
+          if (uploadError) {
+            throw uploadError
+          }
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('property_images')
+            .getPublicUrl(filePath)
+
+          uploadedUrls.push(publicUrl)
         }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('property_images')
-          .getPublicUrl(filePath)
-
-        uploadedUrls.push(publicUrl)
       }
 
       // Get current user
@@ -349,23 +351,16 @@ export default function NewPropertyPage() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Property Images</h3>
                 
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                  <input
-                    type="file"
+                <div className="space-y-2">
+                  <Label htmlFor="images">Property Images (Optional)</Label>
+                  <Input
                     id="images"
+                    type="file"
                     multiple
                     accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
+                    onChange={handleImageChange}
                   />
-                  <label
-                    htmlFor="images"
-                    className="cursor-pointer flex flex-col items-center"
-                  >
-                    <Upload className="h-12 w-12 text-gray-400 mb-2" />
-                    <p className="text-gray-600">Click to upload images</p>
-                    <p className="text-sm text-gray-400">Maximum 10 images</p>
-                  </label>
+                  <p className="text-sm text-gray-500">Upload images of your property (optional)</p>
                 </div>
 
                 {images.length > 0 && (

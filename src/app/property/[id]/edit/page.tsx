@@ -149,26 +149,28 @@ export default function EditPropertyPage() {
     setError('')
 
     try {
-      // Upload new images to Supabase storage
+      // Upload new images to Supabase storage (optional)
       const uploadedUrls: string[] = []
-      for (const image of images) {
-        const fileExt = image.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const filePath = `properties/${fileName}`
+      if (images.length > 0) {
+        for (const image of images) {
+          const fileExt = image.name.split('.').pop()
+          const fileName = `${Math.random()}.${fileExt}`
+          const filePath = `properties/${fileName}`
 
-        const { error: uploadError } = await supabase.storage
-          .from('property_images')
-          .upload(filePath, image)
+          const { error: uploadError } = await supabase.storage
+            .from('property_images')
+            .upload(filePath, image)
 
-        if (uploadError) {
-          throw uploadError
+          if (uploadError) {
+            throw uploadError
+          }
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('property_images')
+            .getPublicUrl(filePath)
+
+          uploadedUrls.push(publicUrl)
         }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('property_images')
-          .getPublicUrl(filePath)
-
-        uploadedUrls.push(publicUrl)
       }
 
       // Combine existing and new images
