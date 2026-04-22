@@ -157,7 +157,7 @@ export default function EditPropertyPage() {
         const filePath = `properties/${fileName}`
 
         const { error: uploadError } = await supabase.storage
-          .from('property-images')
+          .from('property_images')
           .upload(filePath, image)
 
         if (uploadError) {
@@ -165,7 +165,7 @@ export default function EditPropertyPage() {
         }
 
         const { data: { publicUrl } } = supabase.storage
-          .from('property-images')
+          .from('property_images')
           .getPublicUrl(filePath)
 
         uploadedUrls.push(publicUrl)

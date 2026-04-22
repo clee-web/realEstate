@@ -116,7 +116,7 @@ export default function NewPropertyPage() {
         const filePath = `properties/${fileName}`
 
         const { error: uploadError } = await supabase.storage
-          .from('property-images')
+          .from('property_images')
           .upload(filePath, image)
 
         if (uploadError) {
@@ -124,7 +124,7 @@ export default function NewPropertyPage() {
         }
 
         const { data: { publicUrl } } = supabase.storage
-          .from('property-images')
+          .from('property_images')
           .getPublicUrl(filePath)
 
         uploadedUrls.push(publicUrl)
@@ -178,7 +178,7 @@ export default function NewPropertyPage() {
           <CardHeader>
             <CardTitle className="text-2xl">List Your Property</CardTitle>
             <CardDescription>
-              Fill in the details below to list your property on KenyaHomes
+              Fill in the details below to list your property on Kisumu Homes
             </CardDescription>
           </CardHeader>
           <CardContent>

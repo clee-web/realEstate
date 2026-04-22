@@ -172,7 +172,7 @@ export default function HomePage() {
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Find Your Dream Property?</h2>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of Kenyans who found their perfect home through KenyaHomes
+            Join thousands of Kenyans who found their perfect home through Kisumu Homes
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/properties">
@@ -192,7 +192,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="bg-gray-800 text-gray-300 py-8 px-4">
         <div className="container mx-auto text-center">
-          <p>&copy; 2024 KenyaHomes. All rights reserved.</p>
+          <p>&copy; 2024 Kisumu Homes. All rights reserved.</p>
         </div>
       </footer>
     </div>

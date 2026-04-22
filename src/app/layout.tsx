@@ -13,11 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KenyaHomes - Find Your Perfect Property in Kenya",
+  title: "Kisumu Homes - Find Your Perfect Property in Kenya",
   description: "Browse thousands of verified real estate listings in Kenya. Find apartments, houses, land, and commercial properties from trusted agents.",
   keywords: "Kenya real estate, property listings, apartments for rent, houses for sale, land for sale, Nairobi, Mombasa, Kisumu",
   openGraph: {
-    title: "KenyaHomes - Find Your Perfect Property in Kenya",
+    title: "Kisumu Homes - Find Your Perfect Property in Kenya",
     description: "Browse thousands of verified real estate listings in Kenya",
     type: "website",
   },

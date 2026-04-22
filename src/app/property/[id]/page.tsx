@@ -216,7 +216,7 @@ export default function PropertyDetailsPage() {
                 <DialogHeader>
                   <DialogTitle>Report This Listing</DialogTitle>
                   <DialogDescription>
-                    Help us keep KenyaHomes safe by reporting suspicious listings
+                    Help us keep Kisumu Homes safe by reporting suspicious listings
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleReportSubmit} className="space-y-4">

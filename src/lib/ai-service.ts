@@ -21,7 +21,7 @@ export async function generatePropertyDescription(details: PropertyDetails): Pro
     const ai = new GoogleGenAI({ apiKey })
     const model = "gemini-1.5-flash"
 
-    const prompt = `You are a professional real estate copywriter for KenyaHomes, a leading real estate platform in Kenya. Write compelling, professional property descriptions that highlight key features and appeal to potential buyers/renters. Keep descriptions between 150-250 words. Use appropriate real estate terminology for the Kenyan market.
+    const prompt = `You are a professional real estate copywriter for Kisumu Homes, a leading real estate platform in Kenya. Write compelling, professional property descriptions that highlight key features and appeal to potential buyers/renters. Keep descriptions between 150-250 words. Use appropriate real estate terminology for the Kenyan market.
 
 Write a professional property description for:
 - Property Type: ${details.propertyType}
