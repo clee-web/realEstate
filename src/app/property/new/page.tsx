@@ -115,7 +115,14 @@ export default function NewPropertyPage() {
     }
 
     try {
-      // Upload images to Supabase storage (optional)
+      // Get current user first (before any async operations)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/auth/login')
+        return
+      }
+
+      // Upload images to Supabase storage (optional) - use direct API call to avoid auth issues
       const uploadedUrls: string[] = []
       if (images.length > 0) {
         for (const image of images) {
@@ -123,27 +130,28 @@ export default function NewPropertyPage() {
           const fileName = `${Math.random()}.${fileExt}`
           const filePath = `properties/${fileName}`
 
-          const { error: uploadError } = await supabase.storage
-            .from('property_images')
-            .upload(filePath, image)
+          const formDataUpload = new FormData()
+          formDataUpload.append('file', image)
 
-          if (uploadError) {
-            throw uploadError
+          const uploadResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/property_images/${filePath}`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+              },
+              body: image,
+            }
+          )
+
+          if (!uploadResponse.ok) {
+            const error = await uploadResponse.text()
+            throw new Error(`Upload failed: ${error}`)
           }
 
-          const { data: { publicUrl } } = supabase.storage
-            .from('property_images')
-            .getPublicUrl(filePath)
-
+          const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/property_images/${filePath}`
           uploadedUrls.push(publicUrl)
         }
-      }
-
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/auth/login')
-        return
       }
 
       // Insert property into database
@@ -358,7 +366,7 @@ export default function NewPropertyPage() {
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={handleImageUpload}
                   />
                   <p className="text-sm text-gray-500">Upload images of your property (optional)</p>
                 </div>
