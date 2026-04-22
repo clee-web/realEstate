@@ -147,11 +147,10 @@ export default function PropertyDetailsPage() {
         <div className="relative bg-gray-200 rounded-lg overflow-hidden mb-6" style={{ height: '500px' }}>
           {property.images && property.images.length > 0 ? (
             <>
-              <Image
+              <img
                 src={property.images[currentImageIndex]}
                 alt={property.title}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
               {property.images.length > 1 && (
                 <>
