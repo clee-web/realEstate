@@ -107,6 +107,13 @@ export default function NewPropertyPage() {
     setLoading(true)
     setError('')
 
+    // Validate required fields
+    if (!formData.propertyType) {
+      setError('Please select a property type')
+      setLoading(false)
+      return
+    }
+
     try {
       // Upload images to Supabase storage
       const uploadedUrls: string[] = []

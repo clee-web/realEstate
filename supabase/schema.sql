@@ -147,7 +147,7 @@ CREATE POLICY "Admins can view all properties"
     )
   );
 
-CREATE POLICY "Agents can create properties"
+CREATE POLICY "Authenticated users can create properties"
   ON public.properties FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
