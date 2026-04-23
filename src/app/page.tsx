@@ -13,13 +13,34 @@ export default function HomePage() {
   const supabase = createClient()
   const [featuredProperties, setFeaturedProperties] = useState<any[]>([])
   const [latestProperties, setLatestProperties] = useState<any[]>([])
+  const [heroProperties, setHeroProperties] = useState<any[]>([])
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchProperties()
   }, [])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (heroProperties.length > 0) {
+        setCurrentHeroIndex((prev) => (prev + 1) % heroProperties.length)
+      }
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [heroProperties])
+
   const fetchProperties = async () => {
+    const { data: heroData } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('status', 'active')
+      .not('images', 'is', null)
+      .limit(5)
+      .order('created_at', { ascending: false })
+
+    if (heroData) setHeroProperties(heroData)
+
     const { data: featuredData } = await supabase
       .from('properties')
       .select('*')
@@ -45,38 +66,97 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Hero Section with Search */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20 px-4">
-        <div className="container mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            Find Your Perfect Property in Kenya
-          </h1>
-          <p className="text-center text-blue-100 mb-8 text-lg">
-            Browse thousands of verified listings from trusted agents
-          </p>
-          
-          {/* Search Bar */}
-          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  placeholder="Search by location, property type..."
-                  className="pl-10 text-gray-900"
-                />
+      {/* Hero Section with Property Slideshow */}
+      <section className="relative h-[600px] overflow-hidden">
+        {/* Background Image Slideshow */}
+        <div className="absolute inset-0">
+          {heroProperties.length > 0 ? (
+            heroProperties.map((property, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  index === currentHeroIndex ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                {property.images && property.images.length > 0 && (
+                  <img
+                    src={property.images[0]}
+                    alt={property.title}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
               </div>
-              <div className="md:w-48">
-                <Input placeholder="Min Price (KES)" type="number" className="text-gray-900" />
+            ))
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800" />
+          )}
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center">
+          <div className="max-w-2xl">
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
+              Find Your Dream Property in Kisumu
+            </h1>
+            <p className="text-xl text-gray-200 mb-8">
+              Discover premium properties in Kenya's fastest-growing real estate market
+            </p>
+
+            {/* Search Bar */}
+            <div className="bg-white rounded-xl shadow-2xl p-6">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    placeholder="Search by location, property type..."
+                    className="pl-10 text-gray-900 h-12"
+                  />
+                </div>
+                <div className="md:w-48">
+                  <Input placeholder="Min Price (KES)" type="number" className="text-gray-900 h-12" />
+                </div>
+                <div className="md:w-48">
+                  <Input placeholder="Max Price (KES)" type="number" className="text-gray-900 h-12" />
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 h-12 text-lg">
+                  Search
+                </Button>
               </div>
-              <div className="md:w-48">
-                <Input placeholder="Max Price (KES)" type="number" className="text-gray-900" />
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-8 mt-8 text-white">
+              <div>
+                <div className="text-3xl font-bold">500+</div>
+                <div className="text-gray-300">Properties</div>
               </div>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8">
-                Search
-              </Button>
+              <div>
+                <div className="text-3xl font-bold">1000+</div>
+                <div className="text-gray-300">Happy Clients</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold">50+</div>
+                <div className="text-gray-300">Trusted Agents</div>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Slideshow Indicators */}
+        {heroProperties.length > 1 && (
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+            {heroProperties.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentHeroIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === currentHeroIndex ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Quick Categories */}
