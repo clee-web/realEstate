@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { createClient } from '@/lib/supabase/client'
 import { Check, X, Shield, User, Home, Flag, Edit, Search, Plus, Users, AlertCircle } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default function AdminPage() {
   const router = useRouter()
   const supabase = createClient()
