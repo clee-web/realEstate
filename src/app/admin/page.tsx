@@ -29,7 +29,9 @@ export default function AdminPage() {
   const [filterPropertyStatus, setFilterPropertyStatus] = useState('all')
 
   useEffect(() => {
-    setSupabase(createClient())
+    if (typeof window !== 'undefined') {
+      setSupabase(createClient())
+    }
   }, [])
 
   useEffect(() => {
