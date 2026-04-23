@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
 
 export default function AdminPage() {
   const router = useRouter()
-  const supabase = createClient()
+  const [supabase, setSupabase] = useState<any>(null)
   const [user, setUser] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
   const [users, setUsers] = useState<any[]>([])
@@ -29,8 +29,14 @@ export default function AdminPage() {
   const [filterPropertyStatus, setFilterPropertyStatus] = useState('all')
 
   useEffect(() => {
-    checkAdminAccess()
+    setSupabase(createClient())
   }, [])
+
+  useEffect(() => {
+    if (supabase) {
+      checkAdminAccess()
+    }
+  }, [supabase])
 
   const checkAdminAccess = async () => {
     const { data: { user } } = await supabase.auth.getUser()
